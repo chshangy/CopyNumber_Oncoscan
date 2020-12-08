@@ -26,9 +26,6 @@ setwd("/home/rstudio/Jason_project/oncoscan_pipeline") #or your working director
 source("oncoscan_process_functions.R")
 
 ##########set up the series to be processed:
-series.data <- read.delim("./R_input_files/breast_cancer_GEO_oncoScan_datasets.txt", header =T, stringsAsFactors = F) 
-geo.series <- series.data$GEO_series
-##or just simply input the series no as follow:
 #geo.series <- c("GSE83916", "GSE80806", "GSE107394", "GSE125700")
 
 
