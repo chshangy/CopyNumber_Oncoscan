@@ -1,9 +1,9 @@
 
 ###Read Me####
-### This code provide the pipeline for the following process for a GEO series with the GSE.NO (eg."GSE118527")
-#1) download raw data and matrix data from GEO 
-#2) process to get the ASCAT segment data
-#3) process to get the csb segment data 
+### This code provide the pipeline for the following processes
+#1) download raw data and matrix data from GEO using GEOquery
+#2) process to get the ASCAT segment data using EaCoN package
+#3) process to get the CBS segment data using EaCoN package
 
 ##require librarys
 #require(GEOquery, EaCoN, dplyr, magrittr, etc)
@@ -22,14 +22,13 @@ library(EaCoN)
 #devtools::install_github("gustaveroussy/EaCoN")
 
 ##copy the script to your working directory and load the functions
-setwd("/home/rstudio/Jason_project/oncoscan_pipeline") #or your working directory path
+setwd("/home/rstudio/oncoscan_pipeline") #or your working directory path
 source("oncoscan_process_functions.R")
 
 ##########set up the series to be processed:
-#geo.series <- c("GSE83916", "GSE80806", "GSE107394", "GSE125700")
+geo.series <- c("GSE83916", "GSE80806", "GSE107394", "GSE125700")
 
-
-##create a folder call "data" to store the oncoscan raw data
+##create a folder called "data" to store the oncoscan raw data and segmentation outputs
 dir.create(file.path(getwd(), "data"), showWarnings = FALSE)
 mainDir = paste0(getwd(), "/data", sep="")
 
@@ -94,7 +93,6 @@ for(gse in geo.series) {
     print(nrow(model.merge)) ##sample name
     cn.seg = cn.merge %>% left_join(model.merge)
     #save the ASCAT segmentation data
-    #setwd("/home/bchchen/projects/Jason_group/GEO_BC-GI/R_outputs/CN_segmentation_data")
     write.table(cn.seg, paste0("ASCN_segmenation_", gse, ".txt", sep=""), sep = "\t", quote = F, row.names = F, col.names = T)
     ##generate CBS segmentation data
     cbs.files <- list.files(path = getwd(), pattern = "*.NoCut.cbs$", full.names = TRUE, recursive = TRUE)
@@ -103,8 +101,8 @@ for(gse in geo.series) {
     cbs.seg = cbs.merge 
     write.table(cbs.seg, paste0("CBS_segmenation_", gse, ".txt", sep=""), sep = "\t", quote = F, row.names = F, col.names = T)
     
-    #combined ASCAT segments and CBS segments
-    combined.seg = full_join(cn.seg, cbs.seg, by=c("SampleName", "Chr", "Start", "End"))
+    #combined segments
+  #  combined.seg = full_join(cn.seg, cbs.seg, by=c("SampleName", "Chr", "Start", "End"))
     combined.cn.seg = cn.seg %>% left_join(cbs.seg, by=c("SampleName", "Chr", "Start")) %>% select(-End.y)
     colnames(combined.cn.seg)[which(names(combined.cn.seg)=="End.x")] <- "End"
     write.table(combined.cn.seg, paste0("combined_ASCN_segmenation_", gse, ".txt", sep=""), sep = "\t", quote = F, row.names = F, col.names = T)
