@@ -5,21 +5,21 @@
 #2) process to get the ASCAT segment data using EaCoN package
 #3) process to get the CBS segment data using EaCoN package
 
-##require librarys
+##befeore start, please install the packages 
 #require(GEOquery, EaCoN, dplyr, magrittr, etc)
-#
+############please install EaCoN using the following command lines
+#require(devtools)
+#devtools::install_github("Crick-CancerGenomics/ascat/ASCAT")
+#devtools::install_github("mskcc/facets")
+#devtools::install_github("gustaveroussy/EaCoN")
+##refer to the EaCoN website (https://github.com/gustaveroussy/EaCoN) for install of other related R packages
+
 ########## install and load the library
 library(GEOquery)
 library(plyr)
 library(dplyr)
 library(magrittr)
 library(EaCoN)
-
-############if EaCoN is not installed, please install EaCoN using the following command lines
-#require(devtools)
-#devtools::install_github("Crick-CancerGenomics/ascat/ASCAT")
-#devtools::install_github("mskcc/facets")
-#devtools::install_github("gustaveroussy/EaCoN")
 
 ##copy the script to your working directory and load the functions
 setwd("/home/rstudio/oncoscan_pipeline") #or your working directory path
