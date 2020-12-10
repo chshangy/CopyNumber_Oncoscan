@@ -25,15 +25,16 @@ library(EaCoN)
 setwd("/home/rstudio/oncoscan_pipeline") #or your working directory path
 source("oncoscan_process_functions.R")
 
-##########set up the series to be processed:
-geo.series <- c("GSE83916", "GSE80806", "GSE107394", "GSE125700")
-
-##create a folder called "data" to store the oncoscan raw data and segmentation outputs
+##########set up the GEO series to be processed:
+geo.series <- c("GSE125700", "GSE83916", "GSE80806", "GSE107394" )
+#gse = "GSE125700"
+##create a folder call "data" to store the oncoscan raw data
 dir.create(file.path(getwd(), "data"), showWarnings = FALSE)
 mainDir = paste0(getwd(), "/data", sep="")
 
 #start the loop for data process, ignore errors, but print the error messages
 for(gse in geo.series) {
+  print(gse)
   tryCatch({
     #create the series directory and set it as working directory for the processing 
     dir.create(file.path(mainDir, gse), showWarnings = FALSE)
@@ -93,6 +94,7 @@ for(gse in geo.series) {
     print(nrow(model.merge)) ##sample name
     cn.seg = cn.merge %>% left_join(model.merge)
     #save the ASCAT segmentation data
+    #setwd("/home/bchchen/projects/Jason_group/GEO_BC-GI/R_outputs/CN_segmentation_data")
     write.table(cn.seg, paste0("ASCN_segmenation_", gse, ".txt", sep=""), sep = "\t", quote = F, row.names = F, col.names = T)
     ##generate CBS segmentation data
     cbs.files <- list.files(path = getwd(), pattern = "*.NoCut.cbs$", full.names = TRUE, recursive = TRUE)
@@ -101,11 +103,25 @@ for(gse in geo.series) {
     cbs.seg = cbs.merge 
     write.table(cbs.seg, paste0("CBS_segmenation_", gse, ".txt", sep=""), sep = "\t", quote = F, row.names = F, col.names = T)
     
-    #combined segments
-  #  combined.seg = full_join(cn.seg, cbs.seg, by=c("SampleName", "Chr", "Start", "End"))
+    #combined ASCAT segments and CBS segments
+    combined.seg = full_join(cn.seg, cbs.seg, by=c("SampleName", "Chr", "Start", "End"))
     combined.cn.seg = cn.seg %>% left_join(cbs.seg, by=c("SampleName", "Chr", "Start")) %>% select(-End.y)
     colnames(combined.cn.seg)[which(names(combined.cn.seg)=="End.x")] <- "End"
     write.table(combined.cn.seg, paste0("combined_ASCN_segmenation_", gse, ".txt", sep=""), sep = "\t", quote = F, row.names = F, col.names = T)
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
 }
 
+##find out the series have been suceesfully processed or non-processed 
+processed.series = c()
+unprocessed.series = c()
+for(gse in geo.series){ 
+  print(gse)
+  setwd(file.path(mainDir, gse))
+  RDS.files = list.files(path = getwd(), pattern = ".*_processed.RDS$", full.names = TRUE, recursive = TRUE)
+  if(length(RDS.files)==0) {
+    unprocessed.series = c(unprocessed.series, gse)
+  }else{
+    processed.series = c(processed.series, gse)
+  }
+  
+}
