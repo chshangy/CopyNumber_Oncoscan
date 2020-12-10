@@ -5,6 +5,7 @@ Background
 The OncoScan assay is an accepted cancer diagnostic microarray for detection of CNVs, loss of heterozygosity (LOH), and cancer-related somatic mutations,
 
 How to calculate the Genomic Features from the data
+
 Four methods to calculate HRD 
 LOH HRD: calculated a total sum of the number of LOH events (segments with only one allele) in each sample. Then, we normalize the value to be in the range 0–1 and termed it LOH HRD
 AIL HRD: counted the sum of regions with allelic imbalance, an unequal allele copy number and extension to a sub-telomere without crossing the centromere. 
