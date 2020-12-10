@@ -9,7 +9,22 @@ setwd("/home/rstudio/oncoscan_pipeline") ##or the directory where the R files lo
 source("HRD_calculation_Functions_multiple_methods_csy.R")
 source("GI_calculation_Functions_multiple_methods_csy.R")
 source("read_segmentation_Functions_csy.R")
-  
+
+##function of calculate the median segment size in kb from the segmenation output
+median.segSize.cal <- function(seg) {
+  df = as.data.frame(unique(seg$SampleName))
+  df %<>% set_colnames(c("SampleName")) %>% distinct() %>% mutate(median.seg.kb = "na")
+  df %<>% as.matrix() 
+  for(i in 1:nrow(df)) {
+    sample = df[i, 1]
+    data = seg %>% filter(SampleName %in% sample)
+    median.seg = median(data$Width)/1000
+    df[i, 2] = format(round(median.seg, 3), nsmall = 3)
+  }
+  df %<>% as.data.frame(check.names = F)
+  return(df)
+}
+
 
 ##########set up the series to be processed:
 geo.series <- c("GSE125700", "GSE83916", "GSE80806", "GSE107394" )
@@ -82,8 +97,12 @@ for(i in 1:length(geo.series)) {
   ##
   gi.hrd.all = gi.all %>%left_join(tai) %>%left_join(lst) %>%left_join(loh) %>% mutate(GEO=gse)
   
+  ###calculate the median segment size in kb
+  median.seg.kb <- median.segSize.cal(seg.cn.gi)
+  median.seg.kb %<>% mutate(GEO=gse)
+  
   #save the data
   write.table(seg.cn.gi, paste0("Samples_seg_CNA-HRD-LOC_", gse, ".txt", sep=""), sep = "\t", quote = F, row.names = F, col.names = T)
   write.table(gi.hrd.all, paste0("Samples_GI_HRD_", gse, ".txt", sep=""), sep = "\t", quote = F, row.names = F, col.names = T)
-  
+  write.table(median.seg.kb, paste0("Samples_median-seg-size-kb_", gse, ".txt", sep=""), sep = "\t", quote = F, row.names = F, col.names = T)  
 }
