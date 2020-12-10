@@ -1,4 +1,4 @@
-## This file shows an example to calculate the GI Scores and HRD scores from the ASCAT segmentation
+## This file aim to calculate HRD scores, GI Scores and median segment size for each sample from the ASCAT segmentation
 
 #load the library
 library(dplyr)
