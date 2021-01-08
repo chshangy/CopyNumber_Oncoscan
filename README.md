@@ -3,11 +3,11 @@ Data processing and analysis of oncoscan and oncoscanCNV data
 
 Background
 
-The OncoScan assay is an accepted cancer diagnostic microarray for detection of CNVs, loss of heterozygosity (LOH), and cancer-related somatic mutations,
+The OncoScan assay is an accepted cancer diagnostic microarray for detection of CNVs, loss of heterozygosity (LOH), and cancer-related somatic mutations.
 
 How to calculate the Genomic Features from the data
 
-Four methods to calculate HRD 
+Four ways to calculate HRD Scores. 
 
 LOH HRD: calculated a total sum of the number of LOH events (segments with only one allele) in each sample. Then, we normalize the value to be in the range 0–1 and termed it LOH HRD
 
@@ -17,7 +17,7 @@ LST HRD: counted the total number of breakpoints between regions longer than 10 
 
 HRD: The fourth method was defined as (LOH HRD + AIL HRD + LST HRD)/3,  The HRD value calculated by this method termed “HRD”.
 
-Three methods to calculate Genomic instability
+Three ways to calculate Genomic instability Scores. 
 
 Genomic Instability (GIS): Ratio of the total length of regions with a copy number (CN) other than 2 to a constant of 3.3 × 10^9. So, what I did is just take the sum of all the segment length with CN other than 2 and divide it by 3.3 × 10^9
 
@@ -27,9 +27,9 @@ Genomic Instability Index (GII) : Fraction of the genome affected by copy number
 
 What the codes do?
 
-1) download raw data and matrix data from GEO using GEOquery
+1) download raw data (dual channel CEL files) and matrix data from GEO using GEOquery package
 
-2) process the raw data to get the ASCAT segment data using EaCoN package
+2) process the raw data to get the ASCAT segmentation data using EaCoN package (https://github.com/gustaveroussy/EaCoN)
 
 3) Calculate the HRD scores (LOH, LST, TAI and mixed-HRD), GI scores (GIS-Genomic instability, GID-Genomic index, GII-Genomic instability index) and median segment size (in kb) from the segmentation data
 
