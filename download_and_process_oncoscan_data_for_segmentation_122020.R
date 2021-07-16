@@ -103,11 +103,6 @@ for(gse in geo.series) {
     cbs.seg = cbs.merge 
     write.table(cbs.seg, paste0("CBS_segmenation_", gse, ".txt", sep=""), sep = "\t", quote = F, row.names = F, col.names = T)
     
-    #combined ASCAT segments and CBS segments
-    combined.seg = full_join(cn.seg, cbs.seg, by=c("SampleName", "Chr", "Start", "End"))
-    combined.cn.seg = cn.seg %>% left_join(cbs.seg, by=c("SampleName", "Chr", "Start")) %>% select(-End.y)
-    colnames(combined.cn.seg)[which(names(combined.cn.seg)=="End.x")] <- "End"
-    write.table(combined.cn.seg, paste0("combined_ASCN_segmenation_", gse, ".txt", sep=""), sep = "\t", quote = F, row.names = F, col.names = T)
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
 }
 
