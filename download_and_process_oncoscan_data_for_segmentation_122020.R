@@ -91,7 +91,7 @@ for(gse in geo.series) {
     cn.merge <- do.call(rbind,cn.list)
     model.list <- lapply(model.files, read.model)
     model.merge <- do.call(rbind, model.list)
-    print(nrow(model.merge)) ##sample name
+    print(nrow(model.merge)) ##sample number
     cn.seg = cn.merge %>% left_join(model.merge)
     #save the ASCAT segmentation data
     #setwd("/home/bchchen/projects/Jason_group/GEO_BC-GI/R_outputs/CN_segmentation_data")
